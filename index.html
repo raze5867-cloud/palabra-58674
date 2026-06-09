@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Palabra — учи языки с карточками</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;900&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --gd:#0d3d2b;--gm:#1a6b47;--ga:#2eb872;--gl:#6fdfaa;--gp:#d4f5e5;
+  --w:#f8fff9;--td:#0a2318;--tm:#4a7a62;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Golos Text',sans-serif;background:var(--w);color:var(--td);overflow-x:hidden;}
+header{background:var(--gd);padding:0 28px;display:flex;justify-content:space-between;align-items:center;height:62px;position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(0,0,0,.35);}
+.logo{font-family:'Unbounded',sans-serif;font-size:1.4rem;font-weight:900;color:var(--gl);letter-spacing:-1px;}
+.logo span{color:var(--ga);}
+nav a{color:var(--gp);text-decoration:none;padding:4px 9px;font-size:.78rem;font-weight:500;}
+nav a:hover{color:var(--gl);}
+.hero{background:linear-gradient(135deg,var(--gd),var(--gm) 60%,#1f8a5a);min-height:86vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:60px 30px;}
+.hero h1{font-family:'Unbounded',sans-serif;font-size:clamp(2rem,5vw,3.4rem);font-weight:900;color:#fff;line-height:1.15;margin-bottom:18px;}
+.hero h1 span{color:var(--gl);}
+.hero p{font-size:1.05rem;color:rgba(255,255,255,.82);max-width:560px;margin:0 auto 34px;line-height:1.7;}
+.btn{display:inline-block;background:var(--ga);color:#fff;padding:13px 34px;border-radius:50px;font-size:.92rem;font-weight:600;text-decoration:none;border:none;cursor:pointer;font-family:'Golos Text',sans-serif;transition:all .2s;}
+.btn:hover{background:var(--gl);color:var(--gd);}
+.btn-o{background:transparent;border:2px solid var(--gl);color:var(--gl);margin-left:12px;}
+.btn-o:hover{background:var(--gl);color:var(--gd);}
+.sec{padding:70px 36px;max-width:1100px;margin:0 auto;}
+.sec-bg{padding:70px 36px;background:#f0fdf6;}
+.sec-bg .inn{max-width:1100px;margin:0 auto;}
+.sec-w{padding:70px 36px;background:#fff;}
+.sec-w .inn{max-width:1100px;margin:0 auto;}
+.ttl{font-family:'Unbounded',sans-serif;font-size:clamp(1.3rem,3vw,1.9rem);font-weight:700;color:var(--gd);margin-bottom:10px;}
+.sub{color:var(--tm);font-size:.97rem;margin-bottom:40px;line-height:1.65;}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;}
+.card{background:#fff;border:2px solid var(--gp);border-radius:18px;padding:26px;transition:all .3s;}
+.card:hover{border-color:var(--ga);transform:translateY(-3px);box-shadow:0 8px 32px rgba(14,80,50,.14);}
+.card .ico{font-size:1.9rem;margin-bottom:12px;}
+.card h3{font-family:'Unbounded',sans-serif;font-size:.82rem;font-weight:700;color:var(--gd);margin-bottom:7px;}
+.card p{color:var(--tm);font-size:.84rem;line-height:1.6;}
+/* TABS */
+.lang-tabs{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:14px;}
+.lt{padding:8px 18px;border-radius:50px;border:2px solid var(--gp);background:#fff;cursor:pointer;font-family:'Golos Text',sans-serif;font-weight:600;font-size:.82rem;color:var(--tm);transition:all .2s;}
+.lt.on,.lt:hover{background:var(--ga);border-color:var(--ga);color:#fff;}
+.cat-tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:26px;}
+.ct{padding:5px 14px;border-radius:50px;border:2px solid var(--gp);background:#fff;cursor:pointer;font-family:'Golos Text',sans-serif;font-size:.76rem;font-weight:600;color:var(--tm);transition:all .2s;}
+.ct.on,.ct:hover{background:var(--gd);border-color:var(--gd);color:#fff;}
+/* FLASHCARD */
+.fc-area{display:flex;flex-direction:column;align-items:center;gap:18px;}
+.fc-ctr{color:var(--tm);font-size:.84rem;}
+.fc-wrap{perspective:1100px;width:370px;height:250px;cursor:pointer;}
+.fc{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.4,0,.2,1);}
+.fc.flip{transform:rotateY(180deg);}
+.face{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22px;text-align:center;}
+.front{background:linear-gradient(135deg,var(--gd),var(--gm));color:#fff;box-shadow:0 10px 40px rgba(13,61,43,.28);}
+.back{background:#fff;border:3px solid var(--ga);transform:rotateY(180deg);box-shadow:0 10px 40px rgba(46,184,114,.18);}
+.fc-word{font-family:'Unbounded',sans-serif;font-size:1.8rem;font-weight:900;margin-bottom:5px;}
+.fc-hint{font-size:.76rem;opacity:.6;}
+.fc-tr{font-family:'Unbounded',sans-serif;font-size:1.4rem;font-weight:700;color:var(--gd);margin-bottom:5px;}
+.fc-ex{font-size:.8rem;color:var(--tm);font-style:italic;line-height:1.5;margin-bottom:8px;}
+.fc-emoji{font-size:2rem;margin-bottom:8px;}
+.snd-btn{background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.38);color:#fff;border-radius:50px;padding:6px 16px;font-size:.76rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .2s;font-family:'Golos Text',sans-serif;margin-top:6px;}
+.snd-btn:hover,.snd-btn.on{background:var(--ga);border-color:var(--ga);}
+.snd-btn-b{background:var(--gp);border:2px solid var(--ga);color:var(--gd);border-radius:50px;padding:6px 16px;font-size:.76rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .2s;font-family:'Golos Text',sans-serif;}
+.snd-btn-b:hover{background:var(--ga);color:#fff;}
+.fc-ctrl{display:flex;gap:12px;align-items:center;}
+.fc-nav{width:44px;height:44px;border-radius:50%;border:2px solid var(--gp);background:#fff;font-size:1.1rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;}
+.fc-nav:hover{background:var(--ga);border-color:var(--ga);}
+.fc-flip-btn{padding:9px 26px;border-radius:50px;background:var(--ga);color:#fff;border:none;font-family:'Golos Text',sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;}
+.fc-flip-btn:hover{background:var(--gd);}
+.pbar{width:370px;height:5px;background:var(--gp);border-radius:10px;overflow:hidden;}
+.pfill{height:100%;background:linear-gradient(to right,var(--ga),var(--gl));border-radius:10px;transition:width .4s;}
+.fact-box{background:linear-gradient(135deg,var(--gd),#1f6a45);border-radius:18px;padding:18px 22px;margin-top:20px;color:#fff;display:flex;gap:12px;align-items:flex-start;max-width:560px;margin-left:auto;margin-right:auto;}
+.fact-box .fi{font-size:1.6rem;flex-shrink:0;}
+.fact-box .ft{font-size:.84rem;line-height:1.6;opacity:.92;}
+.fact-box .ft b{display:block;font-family:'Unbounded',sans-serif;font-size:.72rem;margin-bottom:3px;color:var(--gl);}
+/* CREATE */
+.cr-layout{display:grid;grid-template-columns:1fr 1fr;gap:32px;}
+.cr-panel{background:#fff;border-radius:20px;padding:26px;border:2px solid var(--gp);}
+.cr-panel h3{font-family:'Unbounded',sans-serif;font-size:.86rem;font-weight:700;color:var(--gd);margin-bottom:16px;}
+.inp{width:100%;padding:10px 13px;border:2px solid var(--gp);border-radius:11px;font-family:'Golos Text',sans-serif;font-size:.88rem;color:var(--td);background:var(--w);outline:none;transition:border .2s;margin-bottom:9px;}
+.inp:focus{border-color:var(--ga);}
+.inp2{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.abtn{width:100%;padding:11px;background:var(--ga);color:#fff;border:none;border-radius:11px;font-family:'Golos Text',sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;transition:all .2s;}
+.abtn:hover{background:var(--gd);}
+.list-box{overflow-y:auto;max-height:280px;display:flex;flex-direction:column;gap:7px;margin-bottom:13px;}
+.list-item{display:flex;align-items:center;justify-content:space-between;background:var(--gp);border-radius:11px;padding:9px 13px;}
+.list-item strong{font-size:.88rem;color:var(--gd);}
+.list-item span{font-size:.76rem;color:var(--tm);display:block;}
+.del{background:none;border:none;font-size:.95rem;cursor:pointer;color:#c0392b;opacity:.6;}
+.del:hover{opacity:1;}
+.empty{text-align:center;color:var(--tm);font-size:.84rem;padding:32px 0;}
+.pbtn{padding:11px;background:var(--gd);color:#fff;border:none;border-radius:11px;font-family:'Golos Text',sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;width:100%;}
+.pbtn:hover{background:var(--ga);}
+.pbtn:disabled{opacity:.4;cursor:not-allowed;}
+/* QUIZ */
+.qbox{background:#fff;border:2px solid var(--gp);border-radius:22px;padding:34px;text-align:center;}
+.qpw{display:flex;align-items:center;gap:11px;margin-bottom:22px;}
+.qpb{flex:1;height:7px;background:var(--gp);border-radius:10px;overflow:hidden;}
+.qpf{height:100%;background:linear-gradient(to right,var(--ga),var(--gl));border-radius:10px;transition:width .4s;}
+.qn{font-size:.8rem;color:var(--tm);}
+.qq{font-family:'Unbounded',sans-serif;font-size:1.4rem;font-weight:900;color:var(--gd);margin-bottom:5px;}
+.qt{font-size:.84rem;color:var(--tm);margin-bottom:22px;}
+.qopts{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:18px;}
+.qo{padding:12px 14px;border-radius:13px;border:2px solid var(--gp);background:var(--w);font-family:'Golos Text',sans-serif;font-size:.88rem;font-weight:500;cursor:pointer;transition:all .2s;color:var(--td);}
+.qo:hover:not(:disabled){border-color:var(--ga);background:#f0fdf6;}
+.qo.ok{background:#d4f5e5;border-color:var(--ga);color:var(--gd);font-weight:700;}
+.qo.bad{background:#fdecea;border-color:#e74c3c;color:#c0392b;}
+.qo:disabled{cursor:default;}
+.qfb{font-size:.88rem;font-weight:600;min-height:24px;margin-bottom:12px;}
+.qfb.ok{color:var(--ga);}
+.qfb.bad{color:#e74c3c;}
+.qnxt{padding:11px 30px;background:var(--ga);color:#fff;border:none;border-radius:50px;font-family:'Golos Text',sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;display:none;}
+.qnxt:hover{background:var(--gd);}
+.qres{text-align:center;}
+.qres .sc{font-family:'Unbounded',sans-serif;font-size:2.8rem;font-weight:900;color:var(--ga);margin:12px 0;}
+.qres p{color:var(--tm);font-size:.92rem;margin-bottom:20px;}
+.qrst{padding:11px 30px;background:var(--gd);color:#fff;border:none;border-radius:50px;font-family:'Golos Text',sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;}
+.qrst:hover{background:var(--ga);}
+/* QB */
+.qb-layout{display:grid;grid-template-columns:1fr 1fr;gap:32px;}
+.qbi{display:flex;align-items:flex-start;justify-content:space-between;background:#fff;border-radius:11px;padding:10px 13px;border:2px solid var(--gp);}
+.qbi strong{font-size:.84rem;color:var(--gd);display:block;}
+.qbi span{font-size:.76rem;color:var(--tm);}
+/* RESULTS */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:26px;}
+.sc-card{background:#fff;border:2px solid var(--gp);border-radius:15px;padding:16px 20px;text-align:center;}
+.sc-num{font-family:'Unbounded',sans-serif;font-size:1.8rem;font-weight:900;color:var(--ga);}
+.sc-lbl{font-size:.75rem;color:var(--tm);margin-top:3px;}
+.rtabs{display:flex;gap:9px;flex-wrap:wrap;}
+.rtab{padding:7px 18px;border-radius:50px;border:2px solid var(--gp);background:#fff;cursor:pointer;font-family:'Golos Text',sans-serif;font-weight:600;font-size:.8rem;color:var(--tm);}
+.rtab.on,.rtab:hover{background:var(--ga);border-color:var(--ga);color:#fff;}
+.tbl-wrap{background:#fff;border-radius:18px;border:2px solid var(--gp);overflow:hidden;margin-top:18px;}
+table{width:100%;border-collapse:collapse;}
+th{background:var(--gd);color:#fff;padding:12px 14px;font-family:'Unbounded',sans-serif;font-size:.7rem;font-weight:700;text-align:left;}
+td{padding:11px 14px;border-bottom:1px solid var(--gp);font-size:.84rem;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#f8fff9;}
+.badge{display:inline-block;padding:2px 9px;border-radius:50px;font-size:.72rem;font-weight:700;}
+.b-gold{background:#fff3cd;color:#856404;}
+.b-gr{background:var(--gp);color:var(--gd);}
+.b-red{background:#fdecea;color:#c0392b;}
+.no-res{text-align:center;padding:40px;color:var(--tm);font-size:.88rem;}
+.clr-btn{padding:7px 18px;background:none;border:2px solid #e74c3c;color:#e74c3c;border-radius:50px;font-family:'Golos Text',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;}
+.clr-btn:hover{background:#fdecea;}
+/* PRON */
+.pron-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:22px;}
+.pron-card{background:#fff;border:2px solid var(--gp);border-radius:18px;padding:22px;}
+.pron-card h3{font-family:'Unbounded',sans-serif;font-size:.86rem;font-weight:700;color:var(--gd);margin-bottom:3px;}
+.pron-sub{font-size:.76rem;color:var(--tm);margin-bottom:14px;}
+.pr{border-bottom:1px solid var(--gp);padding:9px 0;}
+.pr:last-child{border-bottom:none;}
+.pr .rt{font-weight:600;font-size:.84rem;color:var(--gd);}
+.pr .re{font-size:.78rem;color:var(--tm);}
+.pr .tip{font-size:.74rem;color:var(--gm);background:#f0fdf6;border-radius:7px;padding:3px 9px;margin-top:3px;display:inline-block;}
+.plbtn{margin-top:5px;background:var(--gp);border:none;color:var(--gd);border-radius:50px;padding:4px 13px;font-size:.74rem;font-weight:600;cursor:pointer;font-family:'Golos Text',sans-serif;}
+.plbtn:hover{background:var(--ga);color:#fff;}
+/* ARTICLES */
+.art-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:22px;}
+.art-card{background:#fff;border:2px solid var(--gp);border-radius:18px;overflow:hidden;transition:all .3s;}
+.art-card:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(14,80,50,.12);border-color:var(--ga);}
+.art-head{padding:20px 22px 12px;background:linear-gradient(135deg,var(--gd),var(--gm));color:#fff;display:flex;gap:12px;align-items:flex-start;}
+.art-ico{font-size:2rem;}
+.art-head h3{font-family:'Unbounded',sans-serif;font-size:.84rem;font-weight:700;line-height:1.4;}
+.art-body{padding:18px 22px;}
+.art-body p{font-size:.84rem;color:var(--tm);line-height:1.65;margin-bottom:10px;}
+.tip{background:var(--gp);border-radius:9px;padding:9px 13px;font-size:.78rem;color:var(--gd);font-weight:500;margin-bottom:7px;display:flex;gap:7px;}
+/* TESTIMONIALS */
+.test-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;}
+.tst{background:#fff;border:2px solid var(--gp);border-radius:18px;padding:24px;position:relative;}
+.tst::before{content:'"';font-family:'Unbounded',sans-serif;font-size:4rem;color:var(--gp);position:absolute;top:6px;right:16px;line-height:1;}
+.tst p{color:var(--td);font-size:.88rem;line-height:1.7;margin-bottom:16px;}
+.tst strong{font-weight:600;color:var(--gd);display:block;}
+.tst small{font-size:.76rem;color:var(--tm);}
+.stars{color:var(--ga);font-size:.9rem;margin-bottom:11px;}
+/* FAQ */
+.faq-item{border-bottom:2px solid var(--gp);padding:16px 0;}
+.faq-q{font-weight:600;font-size:.92rem;color:var(--gd);cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+.faq-q::after{content:'+';font-size:1.2rem;color:var(--ga);transition:transform .3s;}
+.faq-item.open .faq-q::after{transform:rotate(45deg);}
+.faq-a{color:var(--tm);font-size:.88rem;line-height:1.7;max-height:0;overflow:hidden;transition:max-height .4s,padding .3s;}
+.faq-item.open .faq-a{max-height:200px;padding-top:9px;}
+/* REG */
+.reg{background:linear-gradient(135deg,var(--gd),var(--gm));padding:70px 36px;}
+.reg .inn{max-width:560px;margin:0 auto;text-align:center;}
+.reg .ttl{color:#fff;}
+.reg .sub{color:rgba(255,255,255,.75);margin-bottom:32px;}
+.fg{margin-bottom:13px;}
+.fg input,.fg textarea{width:100%;padding:12px 16px;border-radius:11px;border:2px solid rgba(255,255,255,.22);background:rgba(255,255,255,.1);color:#fff;font-family:'Golos Text',sans-serif;font-size:.88rem;outline:none;}
+.fg input::placeholder,.fg textarea::placeholder{color:rgba(255,255,255,.5);}
+.fg input:focus,.fg textarea:focus{border-color:var(--gl);}
+.fg textarea{height:85px;resize:none;}
+footer{background:var(--gd);color:rgba(255,255,255,.58);text-align:center;padding:32px;font-size:.86rem;}
+footer strong{color:var(--gl);font-family:'Unbounded',sans-serif;}
+footer a{color:var(--gl);text-decoration:none;margin:0 8px;}
+.flinks{margin:12px 0;}
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .55s,transform .55s;}
+.reveal.vis{opacity:1;transform:none;}
+/* NAV TABS */
+.main-tabs{display:flex;gap:0;flex-wrap:wrap;border-bottom:3px solid var(--gp);margin-bottom:0;position:sticky;top:62px;background:var(--w);z-index:90;padding:0 36px;box-shadow:0 2px 10px rgba(14,80,50,.07);}
+.main-tab{padding:14px 20px;font-family:'Golos Text',sans-serif;font-weight:600;font-size:.82rem;color:var(--tm);border:none;background:none;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-3px;transition:all .2s;white-space:nowrap;}
+.main-tab:hover{color:var(--gd);}
+.main-tab.on{color:var(--ga);border-bottom-color:var(--ga);}
+.tab-section{display:none;}
+.tab-section.on{display:block;}
+@media(max-width:800px){.cr-layout,.qb-layout{grid-template-columns:1fr;}}
+@media(max-width:600px){nav{display:none;}.fc-wrap,.pbar{width:300px;}.sec,.sec-bg,.sec-w,.reg{padding:52px 18px;}.qopts{grid-template-columns:1fr;}.pron-grid,.art-grid,.test-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Pala<span>bra</span></div>
+  <nav>
+    <a href="javascript:void(0)" onclick="showTab('cards')">Карточки</a>
+    <a href="javascript:void(0)" onclick="showTab('create')">Создать</a>
+    <a href="javascript:void(0)" onclick="showTab('quiz')">Тесты</a>
+    <a href="javascript:void(0)" onclick="showTab('results')">Результаты</a>
+    <a href="javascript:void(0)" onclick="showTab('pron')">Произношение</a>
+    <a href="javascript:void(0)" onclick="showTab('art')">Статьи</a>
+    <a href="javascript:void(0)" onclick="showTab('reg')">Регистрация</a>
+  </nav>
+</header>
+
+<div class="hero">
+  <div style="position:relative;z-index:2;max-width:740px;margin:0 auto;">
+    <h1>Учи слова,<br/>которые <span>остаются</span></h1>
+    <p>Palabra — платформа для изучения иностранных слов с карточками, произношением вслух, тестами и статистикой прогресса. Никакой скучной зубрёжки.</p>
+    <a href="#cards" class="btn">Попробовать карточки</a>
+    <a href="#reg" class="btn btn-o">Регистрация</a>
+  </div>
+</div>
+
+<section class="sec" id="feat">
+  <div class="reveal"><div class="ttl">Возможности платформы</div><p class="sub">Palabra — это не просто список слов. Это продуманная система, которая учитывает, как работает память, и превращает изучение языка в осознанный, измеримый процесс.</p></div>
+  <div class="grid3">
+    <div class="card reveal"><div class="ico">🃏</div><h3>Карточки по уровням</h3><p>Каждый язык разбит на категории от начального до продвинутого уровня B2+. Вы двигаетесь в своём темпе — от бытовой лексики к академическому словарю.</p></div>
+    <div class="card reveal"><div class="ico">🔊</div><h3>Произношение вслух</h3><p>Один клик — и вы услышите правильное произношение слова вместе с примером в предложении. Повторяйте за диктором, чтобы быстрее освоить новую лексику.</p></div>
+    <div class="card reveal"><div class="ico">✏️</div><h3>Тесты и самопроверка</h3><p>Встроенный тест по английскому закрепляет пройденное, а конструктор позволяет создавать собственные задания на любом языке и по любой теме.</p></div>
+    <div class="card reveal"><div class="ico">💡</div><h3>Факты о языках</h3><p>Каждый язык сопровождается листалкой увлекательных фактов — исторических, культурных, лингвистических. Учёба перестаёт быть скучной задачей.</p></div>
+    <div class="card reveal"><div class="ico">🎤</div><h3>Советы по произношению</h3><p>Подробные правила фонетики для английского, французского, испанского и китайского — с живыми примерами и кнопкой прослушивания для каждого правила.</p></div>
+    <div class="card reveal"><div class="ico">📈</div><h3>Прогресс и аналитика</h3><p>История всех пройденных тестов, средний балл, лучший результат и серия активных дней — всё для того, чтобы видеть, как растут ваши знания.</p></div>
+  </div>
+</section>
+
+<div class="main-tabs" id="mainTabs">
+  <button class="main-tab on"  onclick="showTab('cards')">🃏 Карточки</button>
+  <button class="main-tab"     onclick="showTab('create')">✏️ Создать карточки</button>
+  <button class="main-tab"     onclick="showTab('quiz')">🧪 Тесты</button>
+  <button class="main-tab"     onclick="showTab('results')">📊 Результаты</button>
+  <button class="main-tab"     onclick="showTab('pron')">🎤 Произношение</button>
+  <button class="main-tab"     onclick="showTab('art')">📚 Статьи</button>
+  <button class="main-tab"     onclick="showTab('reg')">📝 Регистрация</button>
+</div>
+
+<div class="tab-section on" id="tab-cards">
+<div class="sec-bg" id="cards">
+  <div class="inn">
+    <div class="reveal"><div class="ttl">Карточки для изучения</div><p class="sub">Выбери язык и категорию. Нажми карточку — увидишь перевод. Нажми 🔊 — услышишь произношение и пример вслух!</p></div>
+    <div class="lang-tabs">
+      <button class="lt on" onclick="setLang('en',this)">🇬🇧 Английский</button>
+      <button class="lt" onclick="setLang('es',this)">🇪🇸 Испанский</button>
+      <button class="lt" onclick="setLang('fr',this)">🇫🇷 Французский</button>
+      <button class="lt" onclick="setLang('zh',this)">🇨🇳 Китайский</button>
+    </div>
+    <div class="cat-tabs" id="catTabs"></div>
+    <div class="fc-area">
+      <div class="fc-ctr" id="fcCtr">Карточка 1 из 8</div>
+      <div class="fc-wrap" onclick="flipCard()">
+        <div class="fc" id="fc">
+          <div class="face front">
+            <div class="fc-emoji" id="fcEmoji">🐶</div>
+            <div class="fc-word" id="fcWord">Dog</div>
+            <button class="snd-btn" id="sndWord" onclick="event.stopPropagation();speakWord()">🔊 Слушать слово</button>
+          </div>
+          <div class="face back">
+            <div class="fc-tr" id="fcTr">Собака</div>
+            <div class="fc-ex" id="fcEx">The dog is playing in the park.</div>
+            <button class="snd-btn-b" onclick="event.stopPropagation();speakEx()">🔊 Слушать пример</button>
+          </div>
+        </div>
+      </div>
+      <div class="pbar"><div class="pfill" id="pFill" style="width:12.5%"></div></div>
+      <div class="fc-ctrl">
+        <button class="fc-nav" onclick="prevCard()">◀</button>
+        <button class="fc-flip-btn" onclick="flipCard()">Перевернуть</button>
+        <button class="fc-nav" onclick="nextCard()">▶</button>
+      </div>
+      <div class="fact-box" id="factBox" style="flex-direction:column;gap:10px;cursor:default;">
+        <div style="display:flex;gap:10px;align-items:flex-start;width:100%;">
+          <div class="fi" id="factIco">💡</div>
+          <div class="ft" id="factTxt" style="flex:1;"><b>Интересный факт</b>Загружается...</div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;width:100%;padding-top:4px;border-top:1px solid rgba(255,255,255,.15);">
+          <button onclick="prevFact()" style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:50px;padding:4px 16px;font-size:.78rem;cursor:pointer;font-family:inherit;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.28)'" onmouseout="this.style.background='rgba(255,255,255,.15)'">◀ Назад</button>
+          <span id="factNum" style="font-size:.72rem;opacity:.6;font-family:Unbounded,sans-serif;">1 / 10</span>
+          <button onclick="nextFact()" style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:50px;padding:4px 16px;font-size:.78rem;cursor:pointer;font-family:inherit;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.28)'" onmouseout="this.style.background='rgba(255,255,255,.15)'">Вперёд ▶</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /sec-bg cards -->
+</div><!-- /tab-section cards -->
+
+<div class="tab-section" id="tab-create">
+<div class="sec-w" id="create">
+  <div class="inn">
+    <div class="reveal"><div class="ttl">Создай свои карточки</div><p class="sub">Добавь слова — и сразу учи их с произношением!</p></div>
+    <div class="cr-layout reveal">
+      <div class="cr-panel">
+        <h3>➕ Новая карточка</h3>
+        <div class="inp2"><input class="inp" id="iWord" placeholder="Слово (напр. Dog)"/><input class="inp" id="iTr" placeholder="Перевод (напр. Собака)"/></div>
+        <input class="inp" id="iEx" placeholder="Пример использования (необязательно)"/>
+        <input class="inp" id="iEmoji" placeholder="Эмодзи (напр. 🐶)"/>
+        <select class="inp" id="iLang" style="cursor:pointer;">
+          <option value="en-US">🇬🇧 Английский</option>
+          <option value="es-ES">🇪🇸 Испанский</option>
+          <option value="fr-FR">🇫🇷 Французский</option>
+          <option value="zh-CN">🇨🇳 Китайский</option>
+        </select>
+        <button class="abtn" onclick="addMyCard()">Добавить карточку</button>
+      </div>
+      <div class="cr-panel" style="display:flex;flex-direction:column;">
+        <h3>📋 Мои карточки (<span id="myCount">0</span>)</h3>
+        <div class="list-box" id="myList"><div class="empty">Пока пусто — добавь первое слово! 👆</div></div>
+        <button class="pbtn" id="playBtn" disabled onclick="playMyCards()">▶ Учить мои карточки</button>
+      </div>
+    </div>
+    <div id="myViewer" style="display:none;margin-top:36px;">
+      <div class="fc-area">
+        <div class="fc-ctr" id="myCtr">Карточка 1 из 1</div>
+        <div class="fc-wrap" onclick="flipMyCard()">
+          <div class="fc" id="myFc">
+            <div class="face front">
+              <div class="fc-emoji" id="myEmoji">🃏</div>
+              <div class="fc-word" id="myWord">Слово</div>
+              <button class="snd-btn" onclick="event.stopPropagation();speakMyWord()">🔊 Слушать</button>
+            </div>
+            <div class="face back">
+              <div class="fc-tr" id="myTr">Перевод</div>
+              <div class="fc-ex" id="myEx"></div>
+              <button class="snd-btn-b" onclick="event.stopPropagation();speakMyEx()">🔊 Пример</button>
+            </div>
+          </div>
+        </div>
+        <div class="pbar"><div class="pfill" id="myFill" style="width:0%"></div></div>
+        <div class="fc-ctrl">
+          <button class="fc-nav" onclick="prevMy()">◀</button>
+          <button class="fc-flip-btn" onclick="flipMyCard()">Перевернуть</button>
+          <button class="fc-nav" onclick="nextMy()">▶</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /sec-w create -->
+</div><!-- /tab-section create -->
+
+<div class="tab-section" id="tab-quiz">
+<div class="sec-bg" id="qen">
+  <div class="inn" style="max-width:700px;">
+    <div class="reveal"><div class="ttl">Тест по английскому</div><p class="sub">Выбери правильный перевод. Результат сохранится в истории.</p></div>
+    <div class="qbox reveal">
+      <div id="qenGame">
+        <div class="qpw"><div class="qpb"><div class="qpf" id="qenP" style="width:0%"></div></div><div class="qn" id="qenN">1/10</div></div>
+        <div class="qq" id="qenW">—</div>
+        <div class="qt">Выбери правильный перевод на русский</div>
+        <div class="qopts" id="qenO"></div>
+        <div class="qfb" id="qenFb"></div>
+        <button class="qnxt" id="qenNxt" onclick="enNext()">Следующий →</button>
+      </div>
+      <div id="qenRes" style="display:none" class="qres">
+        <div style="font-size:2rem">🎉</div>
+        <div class="sc" id="qenSc">0/10</div>
+        <p id="qenMsg"></p>
+        <button class="qrst" onclick="startEnQ()">Ещё раз</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="sec-w" id="qb" style="background:#f0fdf6;">
+  <div class="inn">
+    <div class="reveal"><div class="ttl">Создай свой тест</div><p class="sub">Добавь вопросы с вариантами — и запусти свой тест!</p></div>
+    <div class="qb-layout reveal">
+      <div class="cr-panel" style="background:#f0fdf6;">
+        <h3>➕ Новый вопрос</h3>
+        <input class="inp" id="qbQ" placeholder="Вопрос (напр. Cat)"/>
+        <input class="inp" id="qbC" placeholder="Правильный ответ (напр. Кот)"/>
+        <p style="font-size:.74rem;color:var(--tm);margin-bottom:7px;">Неверные варианты (мин. 1):</p>
+        <div class="inp2"><input class="inp" id="qbW1" placeholder="Неверно 1"/><input class="inp" id="qbW2" placeholder="Неверно 2"/></div>
+        <input class="inp" id="qbW3" placeholder="Неверно 3 (необязательно)"/>
+        <button class="abtn" onclick="addQbQ()">Добавить вопрос</button>
+      </div>
+      <div class="cr-panel" style="display:flex;flex-direction:column;">
+        <h3>📋 Вопросы (<span id="qbCount">0</span>)</h3>
+        <div class="list-box" id="qbList"><div class="empty">Добавь хотя бы 2 вопроса! 👆</div></div>
+        <button class="pbtn" id="startMyQ" disabled onclick="startMyQ()">▶ Запустить мой тест</button>
+      </div>
+    </div>
+    <div id="myQP" style="display:none;margin-top:40px;max-width:700px;margin-left:auto;margin-right:auto;">
+      <div class="qbox">
+        <div id="mqpGame">
+          <div class="qpw"><div class="qpb"><div class="qpf" id="mqpP" style="width:0%"></div></div><div class="qn" id="mqpN">1/?</div></div>
+          <div class="qq" id="mqpW">—</div>
+          <div class="qt">Выбери правильный ответ</div>
+          <div class="qopts" id="mqpO"></div>
+          <div class="qfb" id="mqpFb"></div>
+          <button class="qnxt" id="mqpNxt" onclick="mqpNext()">Следующий →</button>
+        </div>
+        <div id="mqpRes" style="display:none" class="qres">
+          <div style="font-size:2rem">🏆</div>
+          <div class="sc" id="mqpSc">0/?</div>
+          <p id="mqpMsg"></p>
+          <button class="qrst" onclick="startMyQ()">Ещё раз</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /sec-w qb -->
+</div><!-- /tab-section quiz -->
+
+<div class="tab-section" id="tab-results">
+<div class="sec-bg" id="results">
+  <div class="inn">
+    <div class="reveal"><div class="ttl">История результатов</div><p class="sub">Все твои результаты — следи за прогрессом!</p></div>
+    <div class="reveal">
+      <div class="stats-row">
+        <div class="sc-card"><div class="sc-num" id="stTotal">0</div><div class="sc-lbl">Тестов</div></div>
+        <div class="sc-card"><div class="sc-num" id="stAvg">—</div><div class="sc-lbl">Средний балл</div></div>
+        <div class="sc-card"><div class="sc-num" id="stBest">—</div><div class="sc-lbl">Лучший</div></div>
+        <div class="sc-card"><div class="sc-num" id="stStreak">0</div><div class="sc-lbl">Дней подряд</div></div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+        <div class="rtabs">
+          <button class="rtab on" onclick="filterR('all',this)">Все</button>
+          <button class="rtab" onclick="filterR('en',this)">Английский</button>
+          <button class="rtab" onclick="filterR('my',this)">Мои тесты</button>
+        </div>
+        <button class="clr-btn" onclick="clearH()">🗑 Очистить</button>
+      </div>
+      <div class="tbl-wrap">
+        <table><thead><tr><th>#</th><th>Дата</th><th>Тест</th><th>Результат</th><th>Оценка</th></tr></thead>
+        <tbody id="rTbody"></tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /sec-bg results -->
+</div><!-- /tab-section results -->
+
+<div class="tab-section" id="tab-pron">
+<div class="sec-w" id="pron">
+  <div class="inn">
+    <div class="reveal"><div class="ttl">🎤 Советы по произношению</div><p class="sub">Правила для каждого языка — нажми 🔊 чтобы услышать правильное произношение вслух и повторить за диктором!</p></div>
+    <div class="pron-grid">
+
+      <div class="pron-card reveal">
+        <h3>🇬🇧 Английский</h3><p class="pron-sub">Основные трудности для русских</p>
+        <div class="pr">
+          <div class="rt">Звук [θ] — межзубный «th»</div>
+          <div class="re">think • the • thanks • with • three</div>
+          <div class="tip">💡 Кончик языка — между зубами, выдох воздуха. Не «ф» и не «с»!</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
+            <button class="plbtn" onclick="speak('think','en-US')">🔊 think</button>
+            <button class="plbtn" onclick="speak('three','en-US')">🔊 three</button>
+            <button class="plbtn" onclick="speak('I think this is the right thing to do','en-US')">🔊 Пример</button>
+          </div>
+        </div>
+        <div class="pr">
+          <div class="rt">Звук [w] — губной полугласный</div>
+          <div class="re">water • window • world • work • wow</div>
+          <div class="tip">💡 Округли губы трубочкой (как «у»), потом расслабь — получится «уотэ»</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
+            <button class="plbtn" onclick="speak('water','en-US')">🔊 water</button>
+            <button class="plbtn" onclick="speak('world','en-US')">🔊 world</button>
+            <button class="plbtn" onclick="speak('The world is full of wonderful things','en-US')">🔊 Пример</button>
+          </div>
+        </div>
+        <div class="pr">
+          <div class="rt">Звук [æ] — открытое «э»</div>
+          <div class="re">cat • bad • man • hand • black • that</div>
+          <div class="tip">💡 Рот широко открыт, язык внизу — как «а», но короче и напряжённее</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
+            <button class="plbtn" onclick="speak('cat','en-US')">🔊 cat</button>
+            <button class="plbtn" onclick="speak('black cat','en-US')">🔊 black cat</button>
+            <button class="plbtn" onclick="speak('The black cat sat on a flat mat','en-US')">🔊 Пример</button>
+          </div>
+        </div>
+        <div class="pr">
+          <div class="rt">Долгий звук [iː] — «ии»</div>
+          <div class="re">see • tree • green • feel • need • meet</div>
+          <div class="tip">💡 Растяни «и» — губы в улыбке, звук тянется дольше обычного</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
+            <button class="plbtn" onclick="speak('see','en-US')">🔊 see</button>
+            <button class="plbtn" onclick="speak('green tree','en-US')">🔊 green tree</button>
+            <button class="plbtn" onclick="speak('I need to see the green trees','en-US')">🔊 Пример</button>
+          </div>
+        </div>
+        <div class="pr">
+          <div class="rt">Связная речь — linking</div>
+          <div class="re">«pick it up» → «пикитАп» • «come on» → «камОн»</div>
+          <div class="tip">💡 В потоке речи слова сливаются. Тренируй медленно, потом ускоряй</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
+            <button class="plbtn" onclick="speak('pick it up','en-US')">🔊 pick it up</button>
+            <button class="plbtn" onclick="speak('come on, let us go out','en-US')">🔊 come on</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="pron-card reveal">
+        <h3>🇫🇷 Французский</h3><p class="pron-sub">Самые необычные правила</p>
+        <div class="pr">
+          <div class="rt">Носовые гласные [ɑ̃] [ɛ̃] [ɔ̃]</div>
+          <div class="re">un • an • on • en — bon • vin • blanc • dans</div>
+          <div class="tip">💡 Воздух идёт через нос и рот одновременно — зажми нос и почувствуй вибрацию</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
+            <button class="plbtn" onclick="speak('bon','fr-FR')">🔊 bon</button>
+            <button class="plbtn" onclick="speak('un grand vin blanc','fr-FR')">🔊 Пример</button>
+          </div>
+        </div>
+        <div class="pr">
+          <div class="rt">Горловой [ʁ] — «р»</div>
+          <div class="re">rue • rouge • restaurant • Paris • merci</div>
+          <div class="tip">💡 Как полоскание горла — язык не касается нёба, вибрация в горле</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
+            <button class="plbtn" onclick="speak('merci','fr-FR')">🔊 merci</button>
+            <button class="plbtn" onclick="speak('le restaurant rouge a Paris','fr-FR')">🔊 Пример</button>
+          </div>
+        </div>
+        <div class="pr">
+          <div class="rt">Округлённый [y] — «ю» без й</div>
+          <div class="re">tu • lune • sur • musique • rue • vu</div>
+          <div class="tip">💡 Сложи губы как для «у», но попробуй произнести «и» — получится [y]</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
+            <button class="plbtn" onclick="speak('tu','fr-FR')">🔊 tu</button>
+            <button class="plbtn" onclick="speak('la lune sur la rue','fr-FR')">🔊 Пример</button>
+          </div>
+        </div>
+        <div class="pr">
+          <div class="rt">Liaison — слияние слов</div>
+          <div class="re">«vous avez» → [вузаве] • «les amis» → [лезами]</div>
+          <div class="tip">💡 Перед гласной «немая» конечная согласная оживает и читается</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
+            <button class="plbtn" onclick="speak('vous avez','fr-FR')">🔊 vous avez</button>
+            <button class="plbtn" onclick="speak('nous allons chez les amis','fr-FR')">🔊 Пример</button>
+          </div>
+        </div>
+        <div class="pr">
+          <div class="rt">Немые буквы в конце слова</div>
+          <div class="re">«vous» [ву] • «petit» [пти] • «est» [э]</div>
+          <div class="tip">💡 Последние s, t, x, d почти всегда молчат — читай до последней гласной</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
+            <button class="plbtn" onclick="speak('vous','fr-FR')">🔊 vous</button>
+            <button class="plbtn" onclick="speak('il est tres petit','fr-FR')">🔊 Пример</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="pron-card reveal">
+        <h3>🇪🇸 Испанский</h3><p class="pron-sub">Один из самых фонетических языков!</p>
+        <div class="pr">
+          <div class="rt">Буква «ñ» [ɲ]</div>
+          <div class="re">mañana • niño • España • señor • año</div>
+          <div class="tip">💡 Как русское «нь» — язык касается нёба мягко, как в слове «нюанс»</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
+            <button class="plbtn" onclick="speak('mañana','es-ES')">🔊 mañana</button>
+            <button class="plbtn" onclick="speak('buenos dias señor, hasta mañana','es-ES')">🔊 Пример</button>
+          </div>
+        </div>
+        <div class="pr">
+          <div class="rt">Буква «j» и «g» перед e/i</div>
+          <div class="re">jardín • gente • jefe • girar • ojo</div>
+          <div class="tip">💡 Сильное «х» из горла — сильнее, чем в русском «хорошо»</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
+            <button class="plbtn" onclick="speak('ojo','es-ES')">🔊 ojo</button>
+            <button class="plbtn" onclick="speak('la gente trabaja en el jardin','es-ES')">🔊 Пример</button>
+          </div>
+        </div>
+        <div class="pr">
+          <div class="rt">Звук «rr» — раскатистый [r]</div>
+          <div class="re">perro • carro • tierra • correo</div>
+          <div class="tip">💡 Язык вибрирует у альвеол (бугорков за верхними зубами) — как «дррр»</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
+            <button class="plbtn" onclick="speak('perro','es-ES')">🔊 perro</button>
+            <button class="plbtn" onclick="speak('el perro corre por la tierra','es-ES')">🔊 Пример</button>
+          </div>
+        </div>
+        <div class="pr">
+          <div class="rt">Буква «v» = «b»</div>
+          <div class="re">vino • vivir • volver — звучат как «б»</div>
+          <div class="tip">💡 В испанском буквы «b» и «v» читаются одинаково — мягкое «б» или «в»</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
+            <button class="plbtn" onclick="speak('vino','es-ES')">🔊 vino</button>
+            <button class="plbtn" onclick="speak('voy a vivir en Valencia','es-ES')">🔊 Пример</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="pron-card reveal">
+        <h3>🇨🇳 Китайский (путунхуа)</h3><p class="pron-sub">Тоны — основа понимания!</p>
+        <div class="pr">
+          <div class="rt">1-й тон — ровный высокий ˉ</div>
+          <div class="re">妈 mā — мама • 天 tiān — небо • 书 shū — книга</div>
+          <div class="tip">💡 Держи голос на одной высокой ноте, не давай ему упасть</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
+            <button class="plbtn" onclick="speak('妈妈','zh-CN')">🔊 妈妈</button>
+            <button class="plbtn" onclick="speak('天书','zh-CN')">🔊 天书</button>
+          </div>
+        </div>
+        <div class="pr">
+          <div class="rt">2-й тон — восходящий ˊ</div>
+          <div class="re">麻 má — конопля • 国 guó — страна • 人 rén — человек</div>
+          <div class="tip">💡 Голос поднимается вверх — как когда удивлённо переспрашиваешь «А?»</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
+            <button class="plbtn" onclick="speak('中国人','zh-CN')">🔊 中国人</button>
+            <button class="plbtn" onclick="speak('你好吗','zh-CN')">🔊 Пример</button>
+          </div>
+        </div>
+        <div class="pr">
+          <div class="rt">3-й тон — падающий-восходящий ˇ</div>
+          <div class="re">马 mǎ — лошадь • 水 shuǐ — вода • 我 wǒ — я</div>
+          <div class="tip">💡 Голос уходит вниз, потом поднимается — как задумчивое «хм-м»</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
+            <button class="plbtn" onclick="speak('我喝水','zh-CN')">🔊 我喝水</button>
+            <button class="plbtn" onclick="speak('你好','zh-CN')">🔊 你好</button>
+          </div>
+        </div>
+        <div class="pr">
+          <div class="rt">4-й тон — резко падающий ˋ</div>
+          <div class="re">骂 mà — ругать • 是 shì — быть • 爱 ài — любовь</div>
+          <div class="tip">💡 Голос резко падает — как строгое «Нет!» или удар по столу</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
+            <button class="plbtn" onclick="speak('是的','zh-CN')">🔊 是的</button>
+            <button class="plbtn" onclick="speak('我爱中国','zh-CN')">🔊 Пример</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</div><!-- /sec-w pron -->
+</div><!-- /tab-section pron -->
+
+<div class="tab-section" id="tab-art">
+<div class="sec-bg" id="art">
+  <div class="inn">
+    <div class="reveal"><div class="ttl">📚 Статьи о языках</div><p class="sub">Методики, история и советы — чтобы учёба стала увлечением, а не рутиной.</p></div>
+    <div class="art-grid">
+
+      <div class="art-card reveal">
+        <div class="art-head"><div class="art-ico">🧠</div><h3>Как эффективно учить иностранные слова</h3></div>
+        <div class="art-body">
+          <p>Наш мозг не создан для зубрёжки. Когда мы просто повторяем слово снова и снова, нейронные связи остаются слабыми. Но если добавить контекст, эмоцию и правильный ритм повторений — слово уходит в долгосрочную память.</p>
+          <div class="tip">🔁 <strong>Интервальное повторение (Spaced Repetition)</strong> — самый научно доказанный метод. Повторяй новое слово через 1 день, затем 3, 7, 14 и 30 дней. Приложения типа Anki строятся именно на этом принципе.</div>
+          <div class="tip">📖 <strong>Учи слово в предложении</strong>, не изолированно. «Apple» запомнишь хуже, чем «I eat an apple for breakfast every day». Контекст создаёт крючок для памяти.</div>
+          <div class="tip">🖼 <strong>Метод ассоциаций</strong> — связывай слово с ярким образом. Английское «butterfly» (бабочка) — представь масло (butter), которое летит (fly). Абсурдные образы запоминаются лучше.</div>
+          <div class="tip">🗣 <strong>Говори вслух с первого дня.</strong> Произношение — это мышца. Мозг, слух и речевой аппарат должны работать вместе. Читай карточки вслух, даже когда ты один.</div>
+          <div class="tip">⏱ <strong>15 минут каждый день</strong> эффективнее, чем 3 часа раз в неделю. Регулярность формирует нейронные пути — именно так работает долгосрочная память.</div>
+          <div class="tip">🎯 <strong>Правило 80/20</strong> — 20% самых частых слов покрывают 80% живой речи. В английском это около 2 000 слов. Начинай с самых употребляемых!</div>
+        </div>
+      </div>
+
+      <div class="art-card reveal">
+        <div class="art-head"><div class="art-ico">🌍</div><h3>История языков: невероятные факты</h3></div>
+        <div class="art-body">
+          <p>Языки — это живые организмы. Они рождаются, эволюционируют, заимствуют друг у друга и умирают. За каждым словом — тысячелетняя история.</p>
+          <div class="tip">🇬🇧 <strong>Английский — самый богатый словарный запас:</strong> более 1 000 000 слов. Для сравнения: в русском около 200 000. Новое слово появляется каждые 98 минут.</div>
+          <div class="tip">🇫🇷 <strong>Французский правил дипломатией 300 лет.</strong> С XVII по начало XX века все международные договоры, ноты и переговоры вели исключительно на французском.</div>
+          <div class="tip">🇨🇳 <strong>Китайское письмо — старейшее живое письмо в мире.</strong> Иероглифы используются уже более 3 500 лет без перерыва. Для сравнения: латинскому алфавиту около 2 700 лет.</div>
+          <div class="tip">🇪🇸 <strong>Испанский завоевал мир вместе с конкистадорами.</strong> Сегодня на нём говорят в 20 странах, а общее число носителей — более 480 миллионов. Второй язык мира по числу родных носителей.</div>
+          <div class="tip">🌐 <strong>Языки исчезают катастрофически быстро.</strong> Каждые 2 недели умирает один язык. Из 7 000 живых языков половина находится под угрозой исчезновения к 2100 году.</div>
+          <div class="tip">🔤 <strong>Самый длинный алфавит</strong> у кхмерского языка (Камбоджа) — 74 буквы. Самый короткий — у языка ротокас с Соломоновых островов: всего 12 букв.</div>
+          <div class="tip">👶 <strong>Дети усваивают язык молниеносно:</strong> к 6 годам ребёнок знает около 13 000 слов и осваивает всю грамматику без учебников. Взрослым помогает осознанный подход и системность.</div>
+        </div>
+      </div>
+
+      <div class="art-card reveal">
+        <div class="art-head"><div class="art-ico">🎤</div><h3>Почему произношение важнее, чем кажется</h3></div>
+        <div class="art-body">
+          <p>Многие думают: «Главное — знать слова, а произношение потом». Это ошибка. Плохое произношение мешает тебя понимать, даже если каждое слово правильное. И наоборот — хорошее произношение открывает двери.</p>
+          <div class="tip">👂 <strong>Фонематический слух</strong> — способность различать звуки чужого языка. У взрослых он «замкнут» на родном языке. Чтобы его открыть — нужно много слушать аутентичную речь с первых дней.</div>
+          <div class="tip">🔊 <strong>В английском один звук = другое слово:</strong> «ship» (корабль) и «sheep» (овца), «bad» (плохой) и «bed» (кровать), «live» (жить) и «leave» (уходить).</div>
+          <div class="tip">🎵 <strong>В китайском тон = смысл:</strong> один слог «ma» с разными тонами — это мама (māmā), конопля (má), лошадь (mǎ) и ругать (mà). Перепутал тон — сказал другое слово.</div>
+          <div class="tip">🗣 <strong>Метод shadowing</strong> — лучшая техника для произношения. Слушай носителя и повторяй с небольшой задержкой, копируя ритм, интонацию и связку слов. Используют актёры и профессиональные переводчики.</div>
+          <div class="tip">🎬 <strong>Смотри с субтитрами на языке оригинала</strong> — не на русском! Мозг автоматически связывает звук и написание. 20 минут в день такого просмотра через 3 месяца дадут заметный результат.</div>
+          <div class="tip">🪞 <strong>Запись себя</strong> — неловко, но работает. Запиши как ты читаешь фразу, потом послушай носителя — сравни. Разрыв между тем, что ты думаешь, что говоришь, и тем, что слышно — огромный.</div>
+        </div>
+      </div>
+
+      <div class="art-card reveal">
+        <div class="art-head"><div class="art-ico">🚀</div><h3>С чего начать: путь от нуля до разговора</h3></div>
+        <div class="art-body">
+          <p>Самый частый вопрос — «с чего начать?». Вот практичный маршрут, который работает для любого языка.</p>
+          <div class="tip">1️⃣ <strong>Первые 2 недели: фонетика.</strong> Не учи слова — учи звуки. Пойми, каких звуков нет в твоём языке. Для английского: [θ], [w], [æ], [ŋ]. Для французского: [y], [ʁ], носовые. Это фундамент.</div>
+          <div class="tip">2️⃣ <strong>Месяц 1–2: топ-500 слов.</strong> В любом языке есть ядро — самые частотные слова. Выучи их с карточками, всегда в предложениях. Это даст 60–70% понимания простой речи.</div>
+          <div class="tip">3️⃣ <strong>Месяц 2–4: грамматический скелет.</strong> Не зубри правила — учи паттерны. «I go / I went», «Je suis / J'ai». 10 ключевых конструкций покрывают большинство ситуаций.</div>
+          <div class="tip">4️⃣ <strong>С первого дня: слушай живую речь.</strong> Подкасты для начинающих, простые видео с субтитрами. Ухо должно привыкать к ритму языка с самого начала.</div>
+          <div class="tip">5️⃣ <strong>Месяц 3+: говори с людьми.</strong> ITalki, Tandem, языковые клубы. Страх ошибиться — главный враг прогресса. Ошибки — это данные для мозга, не провал.</div>
+          <div class="tip">🏁 <strong>Реалистичные сроки:</strong> A2 (базовое общение) — 3–4 месяца при 1 часе в день. B1 — около года. B2 (свободное общение) — 2–3 года. Главное — не останавливаться.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</div><!-- /sec-bg art -->
+</div><!-- /tab-section art -->
+
+<div class="tab-section" id="tab-reg">
+<section class="sec" id="reviews">
+  <div class="reveal"><div class="ttl">Отзывы пользователей</div><p class="sub">Что говорят те, кто уже учится с Palabra</p></div>
+  <div class="test-grid">
+    <div class="tst reveal"><div class="stars">★★★★★</div><p>Palabra — это именно то, что нужно для подготовки к экзамену! Функция произношения помогла наконец-то научиться говорить.</p><strong>Елена Смирнова</strong><small>Готовится к экзамену</small></div>
+    <div class="tst reveal"><div class="stars">★★★★★</div><p>Карточки по категориям — находка. Начала с животных, теперь на B2. Прогресс виден каждый день!</p><strong>Анна Петрова</strong><small>Начинающий пользователь</small></div>
+    <div class="tst reveal"><div class="stars">★★★★★</div><p>Создал свой тест по испанскому для класса. Дети в восторге — учёба превратилась в соревнование!</p><strong>Максим Иванов</strong><small>Учитель испанского</small></div>
+  </div>
+</section>
+
+<section class="sec" id="faq">
+  <div class="reveal"><div class="ttl">Часто задаваемые вопросы</div><p class="sub">Всё, что нужно знать</p></div>
+  <div class="reveal">
+    <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Какие языки доступны?</div><div class="faq-a">Английский, испанский, французский и китайский. Карточки по 4 категориям: Животные, Еда, Прилагательные, B2.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Как работает произношение?</div><div class="faq-a">На каждой карточке кнопки 🔊 — они озвучивают слово и пример через Web Speech API браузера. Работает в Chrome, Edge, Safari.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Можно создавать свои карточки?</div><div class="faq-a">Да! Раздел «Создай свои карточки» — добавь слово, перевод, пример и выбери язык озвучивания.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Как создать свой тест?</div><div class="faq-a">Раздел «Создай свой тест» — добавь вопрос, правильный ответ и неверные варианты. После 2+ вопросов запускай тест!</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Как отслеживать прогресс?</div><div class="faq-a">Раздел «История результатов» — все тесты с баллами, датой и оценкой. Плюс статистика: среднее, лучший, серия дней.</div></div>
+  </div>
+</section>
+
+<div class="reg" id="reg">
+  <div class="inn reveal">
+    <div class="ttl">Начни учиться прямо сейчас</div>
+    <p class="sub">Регистрируйся и превращай изучение языка в привычку, которая приносит результат!</p>
+    <div class="fg"><input type="text" placeholder="Имя"/></div>
+    <div class="fg"><input type="email" placeholder="Электронная почта"/></div>
+    <div class="fg"><textarea placeholder="Комментарий (необязательно)"></textarea></div>
+    <button class="btn" onclick="alert('Спасибо! 🎉 Добро пожаловать в Palabra!')">Начать учиться</button>
+  </div>
+</div>
+
+</div><!-- /reg -->
+</div><!-- /tab-section reg -->
+
+<footer>
+  <strong>Palabra</strong>
+  <div class="flinks"><a href="mailto:info@palabra.com">info@palabra.com</a><a href="tel:88001424567">8 800 142-45-67</a></div>
+  <p>© 2025 Palabra — платформа для изучения иностранных слов</p>
+</footer>
+
+<script>
+// ── SPEECH ───────────────────────────────────────────────────
+function speak(text, lang) {
+  if (!window.speechSynthesis) {
+    alert('Включи браузер Chrome или Edge для озвучивания слов!');
+    return;
+  }
+  window.speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = lang || 'en-US';
+  u.rate = 0.85;
+  window.speechSynthesis.speak(u);
+}
+
+// ── DECKS ────────────────────────────────────────────────────
+var DECKS = {
+  en: {
+    lang: 'en-US',
+    facts: [
+      {i:'📖', t:'Английский и словарь', f:'В английском более 1 000 000 слов — больше, чем в любом другом языке мира! Для сравнения: в русском около 200 000.'},
+      {i:'🔤', t:'Слово-рекордсмен', f:'Слово "set" — рекордсмен по количеству значений: более 430 определений в Оксфордском словаре. Глагол, существительное, прилагательное.'},
+      {i:'⏱', t:'Новые слова', f:'Каждые 98 минут в английском языке официально появляется новое слово. В год — это около 5 400 новых слов!'},
+      {i:'🏰', t:'Норманнское завоевание', f:'После 1066 года (нормандское завоевание Англии) около 60% английских слов пришли из французского и латинского. Поэтому у каждого английского слова часто есть "умный" французский аналог.'},
+      {i:'🌍', t:'Глобальный язык', f:'Английский — родной для 400 млн и второй язык ещё для 1 млрд человек. Это рабочий язык ООН, НАТО, ЕС и почти всей науки.'},
+      {i:'🎭', t:'Шекспир и язык', f:'Уильям Шекспир изобрёл более 1 700 слов, которые мы используем сегодня: bedroom, lonely, generous, excitement, countless, gloomy и многие другие.'},
+      {i:'🔊', t:'Самое длинное слово', f:'Самое длинное слово в английском — "pneumonoultramicroscopicsilicovolcanoconiosis" (45 букв) — это болезнь лёгких от вдыхания вулканической пыли.'},
+      {i:'🐝', t:'Откуда слово "honey"', f:'Слово "honey" (мёд) — одно из старейших в английском, его корень восходит к протогерманскому языку и означало "золотистый цвет".'},
+      {i:'😤', t:'Слово без синонима', f:'"Serendipity" (счастливая случайность) — одно из самых сложных для перевода английских слов. В русском нет точного эквивалента.'},
+      {i:'🏆', t:'Алфавит и частота', f:'Самая частая буква в английском — "e". Она встречается почти в каждом 8-м символе любого текста. Самая редкая — "q".'}
+    ],
+    cats: {
+      'Животные': [
+        {e:'🐶',w:'Dog',t:'Собака',x:'The dog is playing in the park.'},
+        {e:'🐱',w:'Cat',t:'Кот',x:'The cat sleeps on the sofa.'},
+        {e:'🐻',w:'Bear',t:'Медведь',x:'A bear lives in the forest.'},
+        {e:'🦊',w:'Fox',t:'Лиса',x:'The fox is very clever.'},
+        {e:'🐘',w:'Elephant',t:'Слон',x:'The elephant has a long trunk.'},
+        {e:'🦁',w:'Lion',t:'Лев',x:'The lion is the king of animals.'},
+        {e:'🐬',w:'Dolphin',t:'Дельфин',x:'Dolphins are very intelligent.'},
+        {e:'🦋',w:'Butterfly',t:'Бабочка',x:'A butterfly landed on the flower.'}
+      ],
+      'Еда': [
+        {e:'🍎',w:'Apple',t:'Яблоко',x:'I eat an apple every morning.'},
+        {e:'🍞',w:'Bread',t:'Хлеб',x:'She baked fresh bread today.'},
+        {e:'🥑',w:'Avocado',t:'Авокадо',x:'Avocado is rich in healthy fats.'},
+        {e:'🧀',w:'Cheese',t:'Сыр',x:'Would you like some cheese?'},
+        {e:'🍓',w:'Strawberry',t:'Клубника',x:'Strawberries are my favourite fruit.'},
+        {e:'🥦',w:'Broccoli',t:'Брокколи',x:'Broccoli is very healthy to eat.'},
+        {e:'🍋',w:'Lemon',t:'Лимон',x:'Add lemon juice to the salad.'},
+        {e:'🍣',w:'Sushi',t:'Суши',x:'We ordered sushi for dinner.'}
+      ],
+      'Прилагательные B2+': [
+        {e:'🌫️',w:'Ambivalent',t:'Двойственный / Противоречивый',x:'She felt ambivalent about leaving her hometown.'},
+        {e:'🎯',w:'Astute',t:'Проницательный / Дальновидный',x:'The astute investor saw the opportunity before others.'},
+        {e:'🌀',w:'Convoluted',t:'Запутанный / Замысловатый',x:'The legal document was full of convoluted language.'},
+        {e:'🪨',w:'Steadfast',t:'Непоколебимый / Стойкий',x:'She remained steadfast in her beliefs despite criticism.'},
+        {e:'🌊',w:'Relentless',t:'Неумолимый / Беспощадный',x:'The relentless pressure eventually broke his resolve.'},
+        {e:'🔍',w:'Meticulous',t:'Педантичный / Скрупулёзный',x:'The scientist was meticulous in recording every detail.'},
+        {e:'💨',w:'Ephemeral',t:'Мимолётный / Преходящий',x:'Fame can be ephemeral in the age of social media.'},
+        {e:'🏛️',w:'Pragmatic',t:'Прагматичный / Рациональный',x:'A pragmatic leader focuses on results, not ideals.'}
+      ],
+      'B2-уровень': [
+        {e:'🤔',w:'Ambiguous',t:'Неоднозначный',x:'His ambiguous answer confused everyone.'},
+        {e:'🌀',w:'Inevitable',t:'Неизбежный',x:'Change is inevitable in life.'},
+        {e:'💡',w:'Ingenious',t:'Изобретательный',x:'The engineer found an ingenious solution.'},
+        {e:'🎭',w:'Eloquent',t:'Красноречивый',x:'The eloquent speaker moved the audience.'},
+        {e:'🔮',w:'Profound',t:'Значительный',x:'The book had a profound impact on me.'},
+        {e:'⚖️',w:'Pragmatic',t:'Прагматичный',x:'She took a pragmatic approach.'},
+        {e:'🏛️',w:'Sovereignty',t:'Суверенитет',x:'The country defended its sovereignty.'},
+        {e:'🌐',w:'Contemporary',t:'Современный',x:'Contemporary art challenges tradition.'}
+      ]
+    }
+  },
+  es: {
+    lang: 'es-ES',
+    facts: [
+      {i:'🌎', t:'Масштаб языка', f:'Испанский — второй язык мира по числу родных носителей: более 480 миллионов! На нём говорят на всех обитаемых континентах.'},
+      {i:'🗺', t:'20 стран', f:'Испанский — официальный язык 20 государств. Ни один другой язык не имеет такого географического охвата как родной.'},
+      {i:'🍫', t:'Шоколад и ацтеки', f:'Слово "chocolate" пришло в мир через испанский из языка науатль (ацтеки): "xocolatl". Конкистадоры привезли его в Европу в XVI веке.'},
+      {i:'🔤', t:'Фонетика', f:'Испанский — один из самых фонетически правильных языков: слово читается почти так же, как пишется. Это делает его одним из самых доступных для изучения.'},
+      {i:'❓', t:'Перевёрнутые знаки', f:'В испанском вопросительный ¿ и восклицательный ¡ знаки ставятся ещё и в начале предложения. Это уникальная черта — больше ни в одном языке мира этого нет.'},
+      {i:'🏆', t:'Изучаемость', f:'Испанский — самый изучаемый иностранный язык в мире после английского. Его изучают более 21 миллиона студентов ежегодно.'},
+      {i:'🔤', t:'Арабское наследие', f:'Около 4 000 испанских слов имеют арабское происхождение благодаря 800 годам мавританского владычества. Например: almohada (подушка), azúcar (сахар), algebra.'},
+      {i:'📜', t:'История языка', f:'Испанский произошёл от народной латыни, которую принесли римские солдаты на Пиренейский полуостров в III веке до н.э.'},
+      {i:'🎵', t:'Музыкальность', f:'Испанский считается одним из самых мелодичных языков мира. Итальянские и испанские певцы традиционно доминируют в оперном искусстве.'},
+      {i:'📱', t:'Цифровое будущее', f:'Испанский — третий язык интернета после английского и китайского. Более 8% всего онлайн-контента создаётся на испанском.'}
+    ],
+    cats: {
+      'Animales': [
+        {e:'🐶',w:'Perro',t:'Собака',x:'El perro juega en el parque.'},
+        {e:'🐱',w:'Gato',t:'Кот',x:'El gato duerme en el sofa.'},
+        {e:'🐴',w:'Caballo',t:'Лошадь',x:'El caballo corre muy rapido.'},
+        {e:'🦅',w:'Aguila',t:'Орёл',x:'El aguila vuela muy alto.'},
+        {e:'🐢',w:'Tortuga',t:'Черепаха',x:'La tortuga camina despacio.'},
+        {e:'🦋',w:'Mariposa',t:'Бабочка',x:'La mariposa es muy colorida.'},
+        {e:'🐬',w:'Delfin',t:'Дельфин',x:'El delfin es muy inteligente.'},
+        {e:'🦁',w:'Leon',t:'Лев',x:'El leon ruge en la sabana.'}
+      ],
+      'Comida': [
+        {e:'🥑',w:'Aguacate',t:'Авокадо',x:'El aguacate es muy saludable.'},
+        {e:'🧄',w:'Ajo',t:'Чеснок',x:'El ajo es bueno para la salud.'},
+        {e:'🌮',w:'Taco',t:'Тако',x:'Los tacos son deliciosos.'},
+        {e:'🍋',w:'Limon',t:'Лимон',x:'El limon tiene vitamina C.'},
+        {e:'🍅',w:'Tomate',t:'Томат',x:'El tomate es rojo y jugoso.'},
+        {e:'🥐',w:'Croissant',t:'Круассан',x:'Me como un croissant en el desayuno.'},
+        {e:'🫙',w:'Miel',t:'Мёд',x:'La miel es dulce y natural.'},
+        {e:'🫐',w:'Arandano',t:'Черника',x:'Me encantan los arandanos frescos.'}
+      ],
+      'Adjetivos B2+': [
+        {e:'🌫️',w:'Ambivalente',t:'Двойственный / Противоречивый',x:'Tengo sentimientos ambivalentes sobre esta decision.'},
+        {e:'🎯',w:'Perspicaz',t:'Проницательный / Прозорливый',x:'El analisis perspicaz del critico sorprendio a todos.'},
+        {e:'🪨',w:'Inquebrantable',t:'Непоколебимый / Нерушимый',x:'Su fe inquebrantable la ayudo a superar la crisis.'},
+        {e:'🌀',w:'Intrincado',t:'Запутанный / Сложный',x:'El problema tiene una estructura intrincada y dificil.'},
+        {e:'🔍',w:'Minucioso',t:'Тщательный / Скрупулёзный',x:'El investigador fue minucioso en cada detalle.'},
+        {e:'💨',w:'Efimero',t:'Мимолётный / Преходящий',x:'La gloria efimera no satisface el alma humana.'},
+        {e:'🌊',w:'Implacable',t:'Беспощадный / Неумолимый',x:'El tiempo es implacable con todos por igual.'},
+        {e:'🏛️',w:'Ecuanime',t:'Невозмутимый / Уравновешенный',x:'El juez ecuanime escucho ambas partes con calma.'}
+      ],
+      'Nivel B2': [
+        {e:'🤝',w:'Solidaridad',t:'Солидарность',x:'La solidaridad une a las personas.'},
+        {e:'🔬',w:'Investigacion',t:'Исследование',x:'La investigacion cientifica avanza rapido.'},
+        {e:'⚖️',w:'Imparcial',t:'Беспристрастный',x:'El juez debe ser completamente imparcial.'},
+        {e:'🌀',w:'Paradojico',t:'Парадоксальный',x:'Es paradojico que mas informacion cause confusion.'},
+        {e:'💡',w:'Innovador',t:'Новаторский',x:'El diseno innovador sorprendio a todos.'},
+        {e:'📜',w:'Constitucion',t:'Конституция',x:'La constitucion protege los derechos ciudadanos.'},
+        {e:'🎭',w:'Ambivalente',t:'Двойственный',x:'Tengo sentimientos ambivalentes sobre el cambio.'},
+        {e:'🌐',w:'Globalizacion',t:'Глобализация',x:'La globalizacion conecta economias del mundo.'}
+      ]
+    }
+  },
+  fr: {
+    lang: 'fr-FR',
+    facts: [
+      {i:'🏛', t:'Язык дипломатии', f:'До начала XX века французский был единственным официальным языком международной дипломатии. Все договоры, ноты и переговоры вели исключительно на нём.'},
+      {i:'🔤', t:'Влияние на английский', f:'Около 45% современных английских слов имеют французское происхождение! После норманнского завоевания 1066 года французский на три века стал языком английской аристократии.'},
+      {i:'🌐', t:'Язык ООН', f:'Французский — один из 6 официальных языков ООН и единственный язык (вместе с английским), используемый во всех органах этой организации.'},
+      {i:'🌍', t:'5 континентов', f:'На французском говорят на всех 5 обитаемых континентах. Общее число говорящих — около 300 миллионов человек, и оно продолжает расти.'},
+      {i:'📖', t:'Академия и язык', f:'Académie française существует с 1635 года — это одна из старейших языковых академий мира. Она официально регулирует, какие слова считаются "правильными" французскими.'},
+      {i:'🎨', t:'Язык культуры', f:'Французский традиционно считается языком высокой культуры, кулинарии, моды и искусства. Слова "restaurant", "chef", "ballet", "couture" — все французского происхождения.'},
+      {i:'😄', t:'Сложная грамматика', f:'Во французском 17 основных времён глагола. Но в разговорной речи активно используются лишь 5–6. Остальные — в литературе и официальных текстах.'},
+      {i:'🔠', t:'Немые буквы', f:'Французский — рекордсмен по "немым" буквам. В слове "beaux" (красивые) читается только один звук [бо]. Пишется 5 букв, читается 2!'},
+      {i:'🍽', t:'Кулинарный язык', f:'В мировой кулинарии господствует французская терминология: sauté, julienne, flambé, bouillon, crème brûlée. Французские повара установили стандарты мировой кухни.'},
+      {i:'📚', t:'Литературное наследие', f:'Французская литература подарила миру Вольтера, Гюго, Дюма, Мопассана, Камю, Сартра. Франция — лидер по числу Нобелевских лауреатов в области литературы.'}
+    ],
+    cats: {
+      'Animaux': [
+        {e:'🐶',w:'Chien',t:'Собака',x:'Le chien court dans le jardin.'},
+        {e:'🐱',w:'Chat',t:'Кот',x:'Le chat dort sur le canape.'},
+        {e:'🐦',w:'Oiseau',t:'Птица',x:'L oiseau chante le matin.'},
+        {e:'🐟',w:'Poisson',t:'Рыба',x:'Le poisson nage dans la riviere.'},
+        {e:'🐇',w:'Lapin',t:'Кролик',x:'Le lapin mange des carottes.'},
+        {e:'🦊',w:'Renard',t:'Лиса',x:'Le renard est ruse et rapide.'},
+        {e:'🦋',w:'Papillon',t:'Бабочка',x:'Le papillon vole de fleur en fleur.'},
+        {e:'🐺',w:'Loup',t:'Волк',x:'Le loup hurle a la lune.'}
+      ],
+      'Nourriture': [
+        {e:'🥐',w:'Croissant',t:'Круассан',x:'Je mange un croissant le matin.'},
+        {e:'🧀',w:'Fromage',t:'Сыр',x:'La France est celebre pour son fromage.'},
+        {e:'🥖',w:'Baguette',t:'Багет',x:'J achete une baguette a la boulangerie.'},
+        {e:'🍓',w:'Fraise',t:'Клубника',x:'Les fraises sont mures en ete.'},
+        {e:'🍰',w:'Gateau',t:'Торт',x:'Elle a prepare un gateau delicieux.'},
+        {e:'🫐',w:'Myrtille',t:'Черника',x:'Les myrtilles poussent en foret.'},
+        {e:'🧅',w:'Oignon',t:'Лук',x:'L oignon donne du gout a la soupe.'},
+        {e:'🍷',w:'Vin',t:'Вино',x:'Le vin francais est repute dans le monde.'}
+      ],
+      'Adjectifs B2+': [
+        {e:'🌫️',w:'Ambivalent',t:'Двойственный / Противоречивый',x:'Il avait des sentiments ambivalents envers son ancien ami.'},
+        {e:'🎯',w:'Perspicace',t:'Проницательный / Прозорливый',x:'Son regard perspicace saisit immediatement le probleme.'},
+        {e:'🪨',w:'Indefectible',t:'Нерушимый / Непоколебимый',x:'Son soutien indefectible nous a redonnes courage.'},
+        {e:'🌀',w:'Alambique',t:'Замысловатый / Вычурный',x:'Son style alambique rend la lecture difficile.'},
+        {e:'🔍',w:'Scrupuleux',t:'Скрупулёзный / Добросовестный',x:'Il est scrupuleux dans chaque aspect de son travail.'},
+        {e:'💨',w:'Ephemere',t:'Мимолётный / Преходящий',x:'Les plaisirs ephemeres ne comblent pas le vide interieur.'},
+        {e:'🌊',w:'Implacable',t:'Неумолимый / Беспощадный',x:'La logique implacable de son argument l emporta.'},
+        {e:'🏛️',w:'Equanime',t:'Невозмутимый / Бесстрастный',x:'Le magistrat equanime rendit un verdict juste.'}
+      ],
+      'Niveau B2': [
+        {e:'🤔',w:'Ambiguite',t:'Неоднозначность',x:'L ambiguite de son discours a destabilise l auditoire.'},
+        {e:'⚖️',w:'Equitable',t:'Справедливый',x:'Un systeme equitable respecte tous les citoyens.'},
+        {e:'💡',w:'Perspicace',t:'Проницательный',x:'Son analyse perspicace a impressionne les experts.'},
+        {e:'🌀',w:'Paradoxal',t:'Парадоксальный',x:'Il est paradoxal de vouloir la paix en faisant la guerre.'},
+        {e:'📜',w:'Patrimoine',t:'Наследие',x:'Ce monument fait partie du patrimoine national.'},
+        {e:'🎭',w:'Nuance',t:'Взвешенный',x:'Son approche nuancee a permis de resoudre le conflit.'},
+        {e:'🌐',w:'Mondialisation',t:'Глобализация',x:'La mondialisation a transforme l economie mondiale.'},
+        {e:'🔬',w:'Approfondi',t:'Углублённый',x:'Une etude approfondie est necessaire avant de decider.'}
+      ]
+    }
+  },
+  zh: {
+    lang: 'zh-CN',
+    facts: [
+      {i:'📜', t:'Возраст письменности', f:'Китайскому письму более 3 500 лет — это старейшая непрерывно используемая письменная система в мире. Первые иероглифы выцарапывались на костях животных для гаданий.'},
+      {i:'🔠', t:'Иероглифы', f:'В китайском языке около 50 000 иероглифов. Но грамотному человеку достаточно знать 2 000, чтобы читать газету. Образованный носитель знает около 8 000.'},
+      {i:'🌏', t:'Число носителей', f:'Китайский (мандаринский) — самый распространённый язык мира: более 1,3 млрд носителей. Второе место — испанский (480 млн), третье — английский (400 млн).'},
+      {i:'⏰', t:'Время без времён', f:'В китайском нет грамматических времён глагола! Время передаётся контекстом и словами: 昨天 (вчера), 已经 (уже), 明天 (завтра). Глагол не изменяется — это мечта каждого ученика.'},
+      {i:'🎵', t:'Тоны и смысл', f:'Один слог "ma" с разными тонами — это 4 разных слова: 妈 māmā (мама), 麻 má (конопля), 马 mǎ (лошадь), 骂 mà (ругать). Тон — это часть слова, а не украшение.'},
+      {i:'🖌', t:'Искусство каллиграфии', f:'В Китае каллиграфия — это высокое искусство наравне с живописью. Умение красиво писать иероглифы исторически было признаком образованности и культуры.'},
+      {i:'🔢', t:'Числа и удача', f:'В Китае число 8 считается очень счастливым (звучит как "богатство"). А число 4 — несчастливым (звучит как "смерть"). Квартиры без "4" в номере стоят дороже!'},
+      {i:'🌐', t:'Диалекты', f:'Под названием "китайский" скрываются десятки диалектов, которые взаимно непонятны. Житель Шанхая и житель Кантона не поймут друг друга на родных диалектах — только на путунхуа.'},
+      {i:'🏆', t:'Самое сложное для изучения', f:'По данным Foreign Service Institute США, китайский — один из 5 самых сложных языков для носителей английского. Нужно около 2 200 часов обучения до уровня B2.'},
+      {i:'📱', t:'Современный китайский', f:'Китайский — второй язык интернета. WeChat, TikTok (Douyin), Weibo — гигантские платформы полностью на китайском. Китайский интернет — это отдельная вселенная.'}
+    ],
+    cats: {
+      'Животные': [
+        {e:'🐶',w:'狗 gou',t:'Собака',x:'这只狗很可爱。'},
+        {e:'🐱',w:'猫 mao',t:'Кот',x:'猫在沙发上睡觉。'},
+        {e:'🐼',w:'熊猫 xiongmao',t:'Панда',x:'大熊猫是中国的象征。'},
+        {e:'🐉',w:'龙 long',t:'Дракон',x:'龙是中国文化的象征。'},
+        {e:'🐯',w:'虎 hu',t:'Тигр',x:'虎是森林之王。'},
+        {e:'🐦',w:'鸟 niao',t:'Птица',x:'小鸟在树上唱歌。'},
+        {e:'🐠',w:'鱼 yu',t:'Рыба',x:'河里有很多鱼。'},
+        {e:'🐇',w:'兔子 tuzi',t:'Кролик',x:'兔子跑得很快。'}
+      ],
+      'Еда': [
+        {e:'🍜',w:'面条 miantiao',t:'Лапша',x:'我喜欢吃面条。'},
+        {e:'🍚',w:'米饭 mifan',t:'Рис',x:'米饭是中国的主食。'},
+        {e:'🥟',w:'饺子 jiaozi',t:'Пельмени',x:'春节吃饺子。'},
+        {e:'🍵',w:'茶 cha',t:'Чай',x:'中国茶很有名。'},
+        {e:'🍊',w:'橙子 chengzi',t:'Апельсин',x:'橙子富含维生素C。'},
+        {e:'🍉',w:'西瓜 xigua',t:'Арбуз',x:'夏天吃西瓜很凉快。'},
+        {e:'🫚',w:'花生 huasheng',t:'Арахис',x:'花生酱很好吃。'},
+        {e:'🥢',w:'豆腐 doufu',t:'Тофу',x:'豆腐营养丰富。'}
+      ],
+      'Прилагательные B2+': [
+        {e:'🌫️',w:'矛盾 maodun',t:'Противоречивый / Двойственный',x:'他对这件事有矛盾的感情。'},
+        {e:'🎯',w:'敏锐 minrui',t:'Проницательный / Острый',x:'她有一双敏锐的眼睛，什么都瞒不过她。'},
+        {e:'🪨',w:'坚定 jianding',t:'Непоколебимый / Твёрдый',x:'面对困难，他的意志非常坚定。'},
+        {e:'🌀',w:'错综复杂 cuozongfuza',t:'Запутанный / Сложный',x:'这个案件错综复杂，难以解决。'},
+        {e:'🔍',w:'严谨 yanjin',t:'Скрупулёзный / Строгий',x:'他治学严谨，从不马虎。'},
+        {e:'💨',w:'短暂 duanzhan',t:'Мимолётный / Кратковременный',x:'人生是短暂的，要珍惜每一天。'},
+        {e:'🌊',w:'无情 wuqing',t:'Беспощадный / Безжалостный',x:'时间是无情的，不等任何人。'},
+        {e:'🏛️',w:'冷静 lengjing',t:'Невозмутимый / Хладнокровный',x:'危机时刻，她始终保持冷静。'}
+      ],
+      'B2-уровень': [
+        {e:'🤔',w:'矛盾 maodun',t:'Противоречие',x:'他的话充满矛盾。'},
+        {e:'💡',w:'创新 chuangxin',t:'Инновация',x:'创新推动社会发展。'},
+        {e:'⚖️',w:'公正 gongzheng',t:'Справедливость',x:'法律应该维护公正。'},
+        {e:'🌀',w:'复杂 fuza',t:'Сложный',x:'这个问题非常复杂。'},
+        {e:'📜',w:'传统 chuantong',t:'Традиция',x:'我们要尊重传统文化。'},
+        {e:'🌐',w:'全球化 quanqiuhua',t:'Глобализация',x:'全球化改变了世界经济。'},
+        {e:'🔬',w:'研究 yanjiu',t:'Исследование',x:'科学研究需要耐心。'},
+        {e:'🎭',w:'微妙 weimiao',t:'Деликатный',x:'两国关系非常微妙。'}
+      ]
+    }
+  }
+};
+
+// ── FLASHCARD STATE ──────────────────────────────────────────
+var curLang = 'en', curCat = null, curDeck = [], curIdx = 0, fcFlipped = false;
+
+function getLD() { return DECKS[curLang]; }
+
+function buildCatTabs() {
+  var cats = Object.keys(getLD().cats);
+  if (!curCat || cats.indexOf(curCat) === -1) curCat = cats[0];
+  var html = '';
+  for (var i = 0; i < cats.length; i++) {
+    var c = cats[i];
+    var safe = c.replace(/"/g, '&quot;');
+    html += '<button class="ct' + (c === curCat ? ' on' : '') + '" onclick="setCat(this)">' + c + '</button>';
+  }
+  document.getElementById('catTabs').innerHTML = html;
+}
+
+function setCat(btn) {
+  curCat = btn.textContent; curIdx = 0; fcFlipped = false;
+  var tabs = document.querySelectorAll('.ct');
+  for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('on');
+  btn.classList.add('on');
+  loadDeck();
+}
+
+var factIdx = 0;
+
+function loadDeck() {
+  curDeck = getLD().cats[curCat];
+  renderCard();
+  factIdx = 0;
+  renderFact();
+}
+
+function renderFact() {
+  var facts = getLD().facts;
+  if (!facts || !facts.length) return;
+  var f = facts[factIdx];
+  document.getElementById('factIco').textContent = f.i || '💡';
+  document.getElementById('factTxt').innerHTML = '<b>' + f.t + '</b>' + f.f;
+  document.getElementById('factNum').textContent = (factIdx + 1) + ' / ' + facts.length;
+}
+
+function nextFact() {
+  var facts = getLD().facts;
+  factIdx = (factIdx + 1) % facts.length;
+  renderFact();
+}
+
+function prevFact() {
+  var facts = getLD().facts;
+  factIdx = (factIdx - 1 + facts.length) % facts.length;
+  renderFact();
+}
+
+function setLang(lang, btn) {
+  curLang = lang; curCat = null; curIdx = 0; fcFlipped = false;
+  var tabs = document.querySelectorAll('.lt');
+  for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('on');
+  btn.classList.add('on');
+  buildCatTabs();
+  loadDeck();
+}
+
+function renderCard() {
+  var c = curDeck[curIdx];
+  document.getElementById('fcEmoji').textContent = c.e;
+  document.getElementById('fcWord').textContent  = c.w;
+  document.getElementById('fcTr').textContent    = c.t;
+  document.getElementById('fcEx').textContent    = c.x;
+  document.getElementById('fcCtr').textContent   = 'Карточка ' + (curIdx+1) + ' из ' + curDeck.length + ' · ' + curCat;
+  document.getElementById('pFill').style.width   = ((curIdx+1)/curDeck.length*100) + '%';
+  fcFlipped = false;
+  document.getElementById('fc').classList.remove('flip');
+}
+
+function flipCard() {
+  fcFlipped = !fcFlipped;
+  document.getElementById('fc').classList.toggle('flip', fcFlipped);
+}
+function nextCard() { curIdx = (curIdx+1) % curDeck.length; renderCard(); }
+function prevCard() { curIdx = (curIdx-1+curDeck.length) % curDeck.length; renderCard(); }
+
+function speakWord() {
+  var c = curDeck[curIdx];
+  var clean = c.w.replace(/[^\u4e00-\u9fff\w\s']/g,'').trim();
+  speak(clean, getLD().lang);
+}
+function speakEx() {
+  var c = curDeck[curIdx];
+  speak(c.x, getLD().lang);
+}
+
+// ── MY CARDS ─────────────────────────────────────────────────
+var myCards = [], myIdx = 0, myFlipped = false;
+
+function addMyCard() {
+  var w = document.getElementById('iWord').value.trim();
+  var t = document.getElementById('iTr').value.trim();
+  var x = document.getElementById('iEx').value.trim();
+  var e = document.getElementById('iEmoji').value.trim() || '🃏';
+  var l = document.getElementById('iLang').value;
+  if (!w || !t) { alert('Заполни слово и перевод!'); return; }
+  myCards.push({w:w, t:t, x:x, e:e, l:l});
+  ['iWord','iTr','iEx','iEmoji'].forEach(function(id){ document.getElementById(id).value=''; });
+  renderMyList();
+}
+
+function renderMyList() {
+  document.getElementById('myCount').textContent = myCards.length;
+  document.getElementById('playBtn').disabled = myCards.length === 0;
+  var el = document.getElementById('myList');
+  if (!myCards.length) { el.innerHTML = '<div class="empty">Пока пусто — добавь первое слово! 👆</div>'; return; }
+  var html = '';
+  for (var i = 0; i < myCards.length; i++) {
+    var c = myCards[i];
+    html += '<div class="list-item"><div><strong>' + c.e + ' ' + c.w + '</strong><span>' + c.t + (c.x ? ' · ' + c.x : '') + '</span></div>' +
+            '<button class="del" onclick="delMy(' + i + ')">✕</button></div>';
+  }
+  el.innerHTML = html;
+}
+
+function delMy(i) {
+  myCards.splice(i, 1); renderMyList();
+  if (!myCards.length) document.getElementById('myViewer').style.display = 'none';
+  else renderMyCard();
+}
+
+function playMyCards() {
+  if (!myCards.length) return;
+  myIdx = 0; myFlipped = false;
+  document.getElementById('myViewer').style.display = 'block';
+  document.getElementById('myViewer').scrollIntoView({behavior:'smooth', block:'center'});
+  renderMyCard();
+}
+
+function renderMyCard() {
+  var c = myCards[myIdx];
+  document.getElementById('myEmoji').textContent = c.e;
+  document.getElementById('myWord').textContent  = c.w;
+  document.getElementById('myTr').textContent    = c.t;
+  document.getElementById('myEx').textContent    = c.x || '';
+  document.getElementById('myCtr').textContent   = 'Карточка ' + (myIdx+1) + ' из ' + myCards.length;
+  document.getElementById('myFill').style.width  = ((myIdx+1)/myCards.length*100) + '%';
+  myFlipped = false;
+  document.getElementById('myFc').classList.remove('flip');
+}
+function flipMyCard() { myFlipped = !myFlipped; document.getElementById('myFc').classList.toggle('flip', myFlipped); }
+function nextMy() { myIdx = (myIdx+1) % myCards.length; renderMyCard(); }
+function prevMy() { myIdx = (myIdx-1+myCards.length) % myCards.length; renderMyCard(); }
+function speakMyWord() { var c = myCards[myIdx]; speak(c.w, c.l || 'en-US'); }
+function speakMyEx()   { var c = myCards[myIdx]; if (c.x) speak(c.x, c.l || 'en-US'); }
+
+// ── RESULTS ──────────────────────────────────────────────────
+var quizHistory = [], curFilter = 'all';
+
+function saveResult(type, name, score, total) {
+  var now = new Date();
+  quizHistory.push({
+    date: now.toLocaleDateString('ru-RU'),
+    time: now.toLocaleTimeString('ru-RU', {hour:'2-digit', minute:'2-digit'}),
+    type: type, name: name, score: score, total: total,
+    pct: Math.round(score/total*100)
+  });
+  renderHistory(); renderStats();
+}
+
+function renderHistory() {
+  var body = document.getElementById('rTbody');
+  var list = curFilter === 'all' ? quizHistory : quizHistory.filter(function(r){ return r.type === curFilter; });
+  if (!list.length) {
+    body.innerHTML = '<tr><td colspan="5"><div class="no-res">🎯 Пока нет результатов — пройди тест!</div></td></tr>';
+    return;
+  }
+  var html = '';
+  for (var i = list.length-1; i >= 0; i--) {
+    var r = list[i];
+    var badge = r.pct>=90 ? '<span class="badge b-gold">🏆 Отлично</span>' :
+                r.pct>=60 ? '<span class="badge b-gr">👍 Хорошо</span>' :
+                            '<span class="badge b-red">💪 Стараться</span>';
+    html += '<tr><td><b>'+(list.length-i)+'</b></td><td>'+r.date+' '+r.time+'</td><td>'+r.name+'</td>' +
+            '<td><b>'+r.score+'/'+r.total+'</b> <span style="color:var(--tm);font-size:.76rem">('+r.pct+'%)</span></td>' +
+            '<td>'+badge+'</td></tr>';
+  }
+  body.innerHTML = html;
+}
+
+function renderStats() {
+  document.getElementById('stTotal').textContent = quizHistory.length;
+  if (!quizHistory.length) {
+    document.getElementById('stAvg').textContent = '—';
+    document.getElementById('stBest').textContent = '—';
+    return;
+  }
+  var sum = 0, best = 0;
+  for (var i = 0; i < quizHistory.length; i++) {
+    sum += quizHistory[i].pct;
+    if (quizHistory[i].pct > best) best = quizHistory[i].pct;
+  }
+  document.getElementById('stAvg').textContent  = Math.round(sum/quizHistory.length) + '%';
+  document.getElementById('stBest').textContent = best + '%';
+}
+
+function filterR(type, btn) {
+  curFilter = type;
+  var tabs = document.querySelectorAll('.rtab');
+  for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('on');
+  btn.classList.add('on');
+  renderHistory();
+}
+
+function clearH() {
+  if (!quizHistory.length) return;
+  if (confirm('Очистить всю историю?')) { quizHistory = []; renderHistory(); renderStats(); }
+}
+
+// ── ENGLISH QUIZ ─────────────────────────────────────────────
+var enQuiz = [
+  {w:'Sun',c:'Солнце',x:['Луна','Звезда','Облако']},
+  {w:'Water',c:'Вода',x:['Огонь','Земля','Воздух']},
+  {w:'Friend',c:'Друг',x:['Враг','Незнакомец','Сосед']},
+  {w:'Happy',c:'Счастливый',x:['Грустный','Злой','Усталый']},
+  {w:'Beautiful',c:'Красивый',x:['Уродливый','Страшный','Тихий']},
+  {w:'Run',c:'Бежать',x:['Плыть','Лететь','Ползти']},
+  {w:'Night',c:'Ночь',x:['День','Утро','Вечер']},
+  {w:'City',c:'Город',x:['Деревня','Лес','Море']},
+  {w:'Love',c:'Любовь',x:['Ненависть','Страх','Радость']},
+  {w:'Flower',c:'Цветок',x:['Дерево','Трава','Куст']}
+];
+var enIdx = 0, enScore = 0, enDone = false;
+
+function shuf(a) { return a.slice().sort(function(){ return Math.random()-.5; }); }
+
+function startEnQ() {
+  enIdx=0; enScore=0; enDone=false;
+  document.getElementById('qenGame').style.display = 'block';
+  document.getElementById('qenRes').style.display  = 'none';
+  renderEnQ();
+}
+
+function renderEnQ() {
+  enDone = false;
+  var q = enQuiz[enIdx];
+  document.getElementById('qenW').textContent = q.w;
+  document.getElementById('qenN').textContent = (enIdx+1) + '/' + enQuiz.length;
+  document.getElementById('qenP').style.width = (enIdx/enQuiz.length*100) + '%';
+  document.getElementById('qenFb').textContent = '';
+  document.getElementById('qenFb').className = 'qfb';
+  document.getElementById('qenNxt').style.display = 'none';
+  var opts = shuf([q.c, q.x[0], q.x[1], q.x[2]]);
+  var html = '';
+  for (var i = 0; i < opts.length; i++) {
+    html += '<button class="qo" onclick="pickEn(this)">' + opts[i] + '</button>';
+  }
+  document.getElementById('qenO').innerHTML = html;
+  document.getElementById('qenO').dataset.correct = q.c;
+}
+
+function pickEn(btn) {
+  if (enDone) return; enDone = true;
+  var correct = document.getElementById('qenO').dataset.correct;
+  var btns = document.querySelectorAll('#qenO .qo');
+  for (var i = 0; i < btns.length; i++) btns[i].disabled = true;
+  var fb = document.getElementById('qenFb');
+  if (btn.textContent === correct) {
+    btn.classList.add('ok'); fb.textContent = '✅ Правильно!'; fb.className = 'qfb ok'; enScore++;
+  } else {
+    btn.classList.add('bad'); fb.textContent = '❌ Неверно. Правильно: ' + correct; fb.className = 'qfb bad';
+    for (var i = 0; i < btns.length; i++) { if (btns[i].textContent === correct) btns[i].classList.add('ok'); }
+  }
+  var nx = document.getElementById('qenNxt');
+  nx.style.display = 'inline-block';
+  nx.textContent = enIdx < enQuiz.length-1 ? 'Следующий →' : 'Посмотреть результат';
+}
+
+function enNext() {
+  enIdx++;
+  if (enIdx >= enQuiz.length) {
+    document.getElementById('qenGame').style.display = 'none';
+    document.getElementById('qenRes').style.display  = 'block';
+    document.getElementById('qenSc').textContent = enScore + '/' + enQuiz.length;
+    var msgs = ['Продолжай! 💪','Неплохо 📖','Хорошо! 👍','Отлично! 🌟','Превосходно! 🏆'];
+    document.getElementById('qenMsg').textContent = msgs[Math.min(Math.floor(enScore/2), 4)];
+    document.getElementById('qenP').style.width = '100%';
+    saveResult('en', '🇬🇧 Английский тест', enScore, enQuiz.length);
+  } else renderEnQ();
+}
+
+// ── MY QUIZ ──────────────────────────────────────────────────
+var qbList = [], mqpData = [], mqpIdx = 0, mqpScore = 0, mqpDone = false;
+
+function addQbQ() {
+  var q  = document.getElementById('qbQ').value.trim();
+  var c  = document.getElementById('qbC').value.trim();
+  var w1 = document.getElementById('qbW1').value.trim();
+  var w2 = document.getElementById('qbW2').value.trim();
+  var w3 = document.getElementById('qbW3').value.trim();
+  if (!q || !c || !w1) { alert('Заполни вопрос, правильный ответ и хотя бы 1 неверный!'); return; }
+  qbList.push({q:q, c:c, w:[w1,w2,w3].filter(function(x){return x;})});
+  ['qbQ','qbC','qbW1','qbW2','qbW3'].forEach(function(id){ document.getElementById(id).value=''; });
+  renderQbList();
+}
+
+function renderQbList() {
+  document.getElementById('qbCount').textContent = qbList.length;
+  document.getElementById('startMyQ').disabled = qbList.length < 2;
+  var el = document.getElementById('qbList');
+  if (!qbList.length) { el.innerHTML = '<div class="empty">Добавь хотя бы 2 вопроса! 👆</div>'; return; }
+  var html = '';
+  for (var i = 0; i < qbList.length; i++) {
+    var item = qbList[i];
+    html += '<div class="qbi"><div><strong>❓ '+item.q+'</strong><span>✅ '+item.c+' · ❌ '+item.w.join(', ')+'</span></div>' +
+            '<button class="del" onclick="delQb('+i+')">✕</button></div>';
+  }
+  el.innerHTML = html;
+}
+
+function delQb(i) { qbList.splice(i,1); renderQbList(); }
+
+function startMyQ() {
+  if (qbList.length < 2) return;
+  mqpData = shuf(qbList); mqpIdx=0; mqpScore=0; mqpDone=false;
+  document.getElementById('myQP').style.display = 'block';
+  document.getElementById('myQP').scrollIntoView({behavior:'smooth', block:'center'});
+  document.getElementById('mqpGame').style.display = 'block';
+  document.getElementById('mqpRes').style.display  = 'none';
+  renderMqp();
+}
+
+function renderMqp() {
+  mqpDone = false;
+  var item = mqpData[mqpIdx];
+  document.getElementById('mqpW').textContent = item.q;
+  document.getElementById('mqpN').textContent = (mqpIdx+1) + '/' + mqpData.length;
+  document.getElementById('mqpP').style.width = (mqpIdx/mqpData.length*100) + '%';
+  document.getElementById('mqpFb').textContent=''; document.getElementById('mqpFb').className='qfb';
+  document.getElementById('mqpNxt').style.display='none';
+  var opts = shuf([item.c].concat(item.w)).slice(0,4);
+  if (opts.indexOf(item.c) === -1) opts[0] = item.c;
+  opts = shuf(opts);
+  var html = '';
+  for (var i = 0; i < opts.length; i++) {
+    html += '<button class="qo" onclick="pickMqp(this)">' + opts[i] + '</button>';
+  }
+  document.getElementById('mqpO').innerHTML = html;
+  document.getElementById('mqpO').dataset.correct = item.c;
+}
+
+function pickMqp(btn) {
+  if (mqpDone) return; mqpDone=true;
+  var correct = document.getElementById('mqpO').dataset.correct;
+  var btns = document.querySelectorAll('#mqpO .qo');
+  for (var i=0;i<btns.length;i++) btns[i].disabled=true;
+  var fb = document.getElementById('mqpFb');
+  if (btn.textContent === correct) {
+    btn.classList.add('ok'); fb.textContent='✅ Правильно!'; fb.className='qfb ok'; mqpScore++;
+  } else {
+    btn.classList.add('bad'); fb.textContent='❌ Неверно. Правильно: '+correct; fb.className='qfb bad';
+    for (var i=0;i<btns.length;i++) { if(btns[i].textContent===correct) btns[i].classList.add('ok'); }
+  }
+  var nx=document.getElementById('mqpNxt'); nx.style.display='inline-block';
+  nx.textContent = mqpIdx<mqpData.length-1 ? 'Следующий →' : 'Посмотреть результат';
+}
+
+function mqpNext() {
+  mqpIdx++;
+  if (mqpIdx >= mqpData.length) {
+    document.getElementById('mqpGame').style.display='none';
+    document.getElementById('mqpRes').style.display='block';
+    document.getElementById('mqpSc').textContent = mqpScore+'/'+mqpData.length;
+    var pct = Math.round(mqpScore/mqpData.length*100);
+    document.getElementById('mqpMsg').textContent = pct>=80?'Отлично! 🌟':pct>=50?'Хорошо! 👍':'Ещё практики! 💪';
+    document.getElementById('mqpP').style.width='100%';
+    saveResult('my','🛠 Мой тест ('+mqpData.length+' вопр.)',mqpScore,mqpData.length);
+  } else renderMqp();
+}
+
+// ── SCROLL REVEAL ────────────────────────────────────────────
+var obs = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e, i) {
+    if (e.isIntersecting) setTimeout(function(){ e.target.classList.add('vis'); }, i*60);
+  });
+}, {threshold:0.08});
+document.querySelectorAll('.reveal').forEach(function(el){ obs.observe(el); });
+
+// ── TAB SYSTEM ───────────────────────────────────────────────
+function showTab(name) {
+  var sections = document.querySelectorAll('.tab-section');
+  for (var i = 0; i < sections.length; i++) sections[i].classList.remove('on');
+  var tabs = document.querySelectorAll('.main-tab');
+  for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('on');
+
+  var sec = document.getElementById('tab-' + name);
+  if (sec) sec.classList.add('on');
+
+  var allTabs = document.querySelectorAll('.main-tab');
+  for (var i = 0; i < allTabs.length; i++) {
+    if (allTabs[i].getAttribute('onclick') && allTabs[i].getAttribute('onclick').indexOf(name) !== -1) {
+      allTabs[i].classList.add('on');
+    }
+  }
+  window.scrollTo({top: 62, behavior: 'smooth'});
+}
+
+// ── INIT ─────────────────────────────────────────────────────
+buildCatTabs();
+loadDeck();
+startEnQ();
+renderHistory();
+renderStats();
+</script>
+</body>
+</html>
